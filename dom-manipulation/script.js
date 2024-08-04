@@ -1,3 +1,6 @@
+const API_URL = 'https://jsonplaceholder.typicode.com/posts'; // Mock API for simulation
+const SYNC_INTERVAL = 60000; // Sync every minute (60000 ms)
+
 // Load quotes from local storage or initialize with sample quotes
 const quotes = JSON.parse(localStorage.getItem('quotes')) || [
     { text: "The best way to predict the future is to invent it.", category: "Inspiration" },
@@ -14,13 +17,13 @@ function saveQuotes() {
 function displayQuote(quote) {
     const quoteDisplay = document.getElementById('quoteDisplay');
     quoteDisplay.innerHTML = '';
-    
+
     const quoteText = document.createElement('p');
     quoteText.textContent = quote.text;
-    
+
     const quoteCategory = document.createElement('p');
     quoteCategory.textContent = `Category: ${quote.category}`;
-    
+
     quoteDisplay.appendChild(quoteText);
     quoteDisplay.appendChild(quoteCategory);
 }
@@ -30,7 +33,6 @@ function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
     displayQuote(randomQuote);
-    // Save last viewed quote to session storage
     sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
 }
 
@@ -64,7 +66,6 @@ function populateCategories() {
         categoryFilter.appendChild(option);
     });
 
-    // Restore the last selected category filter from localStorage
     const lastSelectedCategory = localStorage.getItem('selectedCategory');
     if (lastSelectedCategory) {
         categoryFilter.value = lastSelectedCategory;
@@ -77,7 +78,6 @@ function filterQuotes() {
     const selectedCategory = document.getElementById('categoryFilter').value;
     const filteredQuotes = selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
 
-    // Save the selected category to localStorage
     localStorage.setItem('selectedCategory', selectedCategory);
 
     const quoteDisplay = document.getElementById('quoteDisplay');
@@ -98,7 +98,6 @@ function exportToJsonFile() {
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
 
-    // Clean up the URL object
     URL.revokeObjectURL(url);
 }
 
@@ -115,6 +114,35 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
 }
 
+// Function to sync data with the server
+async function syncWithServer() {
+    try {
+        // Fetch quotes from the server
+        const response = await fetch(API_URL);
+        const serverQuotes = await response.json();
+
+        // Simulate server response having quotes with id and text
+        const serverQuotesFormatted = serverQuotes.map(quote => ({
+            text: quote.title, // Assuming title as quote text for simulation
+            category: 'Uncategorized' // Server-side category for simulation
+        }));
+
+        // Conflict resolution: server data takes precedence
+        const mergedQuotes = [...serverQuotesFormatted];
+        saveQuotes();
+        populateCategories();
+        alert('Quotes synchronized successfully!');
+    } catch (error) {
+        console.error('Error syncing with server:', error);
+    }
+}
+
+// Function to handle periodic syncing
+function startSyncing() {
+    syncWithServer();
+    setInterval(syncWithServer, SYNC_INTERVAL);
+}
+
 // Event listener for showing a new random quote
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
@@ -127,3 +155,6 @@ const lastViewedQuote = sessionStorage.getItem('lastViewedQuote');
 if (lastViewedQuote) {
     displayQuote(JSON.parse(lastViewedQuote));
 }
+
+// Start syncing with the server
+startSyncing();
