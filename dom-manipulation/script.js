@@ -62,7 +62,7 @@ function populateCategories() {
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
-        option.textContent = category; // Using textContent here
+        option.textContent = category;
         categoryFilter.appendChild(option);
     });
 
@@ -135,15 +135,33 @@ async function fetchQuotesFromServer() {
 
 // Function to sync data with the server
 async function syncWithServer() {
-    const serverQuotes = await fetchQuotesFromServer();
+    try {
+        // POST local quotes to server (for demonstration)
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quotes)
+        });
 
-    // Simple conflict resolution: server data takes precedence
-    const mergedQuotes = [...serverQuotes];
-    quotes.length = 0; // Clear local quotes
-    quotes.push(...mergedQuotes); // Add merged quotes
-    saveQuotes();
-    populateCategories();
-    alert('Quotes synchronized successfully!');
+        if (!response.ok) {
+            throw new Error('Failed to sync with server');
+        }
+
+        // Fetch the latest quotes from the server
+        const serverQuotes = await fetchQuotesFromServer();
+
+        // Simple conflict resolution: server data takes precedence
+        const mergedQuotes = [...serverQuotes];
+        quotes.length = 0; // Clear local quotes
+        quotes.push(...mergedQuotes); // Add merged quotes
+        saveQuotes();
+        populateCategories();
+        alert('Quotes synchronized successfully!');
+    } catch (error) {
+        console.error('Error syncing with server:', error);
+    }
 }
 
 // Function to handle periodic syncing
