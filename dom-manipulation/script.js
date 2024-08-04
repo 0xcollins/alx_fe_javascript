@@ -13,7 +13,16 @@ function saveQuotes() {
 // Function to display a specific quote
 function displayQuote(quote) {
     const quoteDisplay = document.getElementById('quoteDisplay');
-    quoteDisplay.innerHTML = `<p>${quote.text}</p><p><em>${quote.category}</em></p>`;
+    quoteDisplay.innerHTML = '';
+    
+    const quoteText = document.createElement('p');
+    quoteText.textContent = quote.text;
+    
+    const quoteCategory = document.createElement('p');
+    quoteCategory.textContent = `Category: ${quote.category}`;
+    
+    quoteDisplay.appendChild(quoteText);
+    quoteDisplay.appendChild(quoteCategory);
 }
 
 // Function to display a random quote
@@ -51,7 +60,7 @@ function populateCategories() {
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
-        option.innerText = category;
+        option.textContent = category; // Using textContent here
         categoryFilter.appendChild(option);
     });
 
