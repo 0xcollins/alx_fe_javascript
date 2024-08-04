@@ -33,8 +33,8 @@ function addQuote() {
     if (newQuoteText && newQuoteCategory) {
         const newQuote = { text: newQuoteText, category: newQuoteCategory };
         quotes.push(newQuote);
-        updateCategories();
         saveQuotes();
+        populateCategories();
         alert('New quote added successfully!');
         document.getElementById('newQuoteText').value = '';
         document.getElementById('newQuoteCategory').value = '';
@@ -44,7 +44,7 @@ function addQuote() {
 }
 
 // Function to populate categories dynamically
-function updateCategories() {
+function populateCategories() {
     const categoryFilter = document.getElementById('categoryFilter');
     const categories = [...new Set(quotes.map(quote => quote.category))];
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
@@ -100,7 +100,7 @@ function importFromJsonFile(event) {
         const importedQuotes = JSON.parse(event.target.result);
         quotes.push(...importedQuotes);
         saveQuotes();
-        updateCategories();
+        populateCategories();
         alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
@@ -109,11 +109,8 @@ function importFromJsonFile(event) {
 // Event listener for showing a new random quote
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
-// Create and append the add quote form when the page loads
-createAddQuoteForm();
-
 // Populate categories and show an initial random quote when the page loads
-updateCategories();
+populateCategories();
 showRandomQuote();
 
 // Restore and display the last viewed quote from session storage if available
