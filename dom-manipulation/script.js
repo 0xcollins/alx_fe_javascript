@@ -158,7 +158,7 @@ async function syncQuotes() {
         quotes.push(...mergedQuotes); // Add merged quotes
         saveQuotes();
         populateCategories();
-        alert('Quotes synchronized successfully!');
+        alert('Quotes synced with server!');
     } catch (error) {
         console.error('Error syncing with server:', error);
     }
