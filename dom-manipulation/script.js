@@ -10,6 +10,12 @@ function saveQuotes() {
     localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
+// Function to display a specific quote
+function displayQuote(quote) {
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.innerHTML = `<p>${quote.text}</p><p><em>${quote.category}</em></p>`;
+}
+
 // Function to display a random quote
 function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -17,12 +23,6 @@ function showRandomQuote() {
     displayQuote(randomQuote);
     // Save last viewed quote to session storage
     sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
-}
-
-// Function to display a specific quote
-function displayQuote(quote) {
-    const quoteDisplay = document.getElementById('quoteDisplay');
-    quoteDisplay.innerHTML = `<p>${quote.text}</p><p><em>${quote.category}</em></p>`;
 }
 
 // Function to add a new quote
@@ -41,30 +41,6 @@ function addQuote() {
     } else {
         alert('Please enter both a quote and a category.');
     }
-}
-
-// Function to create and append the add quote form dynamically
-function createAddQuoteForm() {
-    const formContainer = document.createElement('div');
-    
-    const quoteInput = document.createElement('input');
-    quoteInput.id = 'newQuoteText';
-    quoteInput.type = 'text';
-    quoteInput.placeholder = 'Enter a new quote';
-    formContainer.appendChild(quoteInput);
-    
-    const categoryInput = document.createElement('input');
-    categoryInput.id = 'newQuoteCategory';
-    categoryInput.type = 'text';
-    categoryInput.placeholder = 'Enter quote category';
-    formContainer.appendChild(categoryInput);
-    
-    const addButton = document.createElement('button');
-    addButton.innerText = 'Add Quote';
-    addButton.onclick = addQuote;
-    formContainer.appendChild(addButton);
-
-    document.body.appendChild(formContainer);
 }
 
 // Function to populate categories dynamically
