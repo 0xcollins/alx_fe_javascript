@@ -28,7 +28,7 @@ function displayQuote(quote) {
     quoteDisplay.appendChild(quoteCategory);
 }
 
-// Function to display a random quote
+// Function to show a random quote
 function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
@@ -133,8 +133,8 @@ async function fetchQuotesFromServer() {
     }
 }
 
-// Function to sync data with the server
-async function syncWithServer() {
+// Function to sync quotes with the server
+async function syncQuotes() {
     try {
         // POST local quotes to server (for demonstration)
         const response = await fetch(API_URL, {
@@ -166,8 +166,8 @@ async function syncWithServer() {
 
 // Function to handle periodic syncing
 function startSyncing() {
-    syncWithServer();
-    setInterval(syncWithServer, SYNC_INTERVAL);
+    syncQuotes();
+    setInterval(syncQuotes, SYNC_INTERVAL);
 }
 
 // Event listener for showing a new random quote
