@@ -114,10 +114,9 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
 }
 
-// Function to sync data with the server
-async function syncWithServer() {
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
     try {
-        // Fetch quotes from the server
         const response = await fetch(API_URL);
         const serverQuotes = await response.json();
 
@@ -127,14 +126,24 @@ async function syncWithServer() {
             category: 'Uncategorized' // Server-side category for simulation
         }));
 
-        // Conflict resolution: server data takes precedence
-        const mergedQuotes = [...serverQuotesFormatted];
-        saveQuotes();
-        populateCategories();
-        alert('Quotes synchronized successfully!');
+        return serverQuotesFormatted;
     } catch (error) {
-        console.error('Error syncing with server:', error);
+        console.error('Error fetching quotes from server:', error);
+        return [];
     }
+}
+
+// Function to sync data with the server
+async function syncWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+
+    // Simple conflict resolution: server data takes precedence
+    const mergedQuotes = [...serverQuotes];
+    quotes.length = 0; // Clear local quotes
+    quotes.push(...mergedQuotes); // Add merged quotes
+    saveQuotes();
+    populateCategories();
+    alert('Quotes synchronized successfully!');
 }
 
 // Function to handle periodic syncing
